@@ -10,14 +10,17 @@ public class Main {
         Student student = new Student("Fedor", 25, 4.8);
 
         System.out.println(student.toString());
-        FileOutputStream fileOutputStream = new FileOutputStream("studObj");
-        ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-        objectOutputStream.writeObject(student);
+        try (FileOutputStream fileOutputStream = new FileOutputStream("studObj")) {
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(student);
+        }
 
-        FileInputStream fileInputStream = new FileInputStream("studObj");
-        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-        Student studentObj = (Student)objectInputStream.readObject();
-        System.out.println(studentObj.toString());
+        ObjectInputStream objectInputStream;
+        try (FileInputStream fileInputStream = new FileInputStream("studObj")) {
+            objectInputStream = new ObjectInputStream(fileInputStream);
+            Student studentObj = (Student)objectInputStream.readObject();
+            System.out.println(studentObj.toString());
+        }
 
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonStudent = objectMapper.writeValueAsString(student);
