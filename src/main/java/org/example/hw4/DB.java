@@ -15,6 +15,7 @@ public class DB {
 
     public static void con(){
         Connector connector = new Connector();
+        //Добавление
         try (Session session = connector.getSession()) {
             Course course = new Course("Python", 55);
             session.beginTransaction();
@@ -26,9 +27,15 @@ public class DB {
         } catch (Exception ex){
             ex.printStackTrace();
         }
+        //Чтение
         try (Session session = connector.getSession()) {
             List<Course> courses = session.createQuery("FROM Course", Course.class).getResultList();
             courses.forEach(System.out::println);
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+        //Изменение
+        try (Session session = connector.getSession()) {
             String hql = "FROM Course WHERE id = :id";
             Query<Course> query = session.createQuery(hql,Course.class);
             query.setParameter("id", 5);
@@ -39,6 +46,17 @@ public class DB {
             session.beginTransaction();
             session.update(course);
             session.getTransaction().commit();
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+        //Удаление
+        try (Session session = connector.getSession()) {
+            List<Course> courses = session.createQuery("FROM Course", Course.class).getResultList();
+            courses.forEach(m->{
+                session.beginTransaction();
+                session.update(m);
+                session.getTransaction().commit();
+            });
         } catch (Exception ex){
             ex.printStackTrace();
         }
