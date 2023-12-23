@@ -36,6 +36,17 @@
     <last-used-operator value="EQUAL" />
     <filters />
   </component>
+  <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-actions connection-id="72228584-086d-4758-9ef6-b9b9af7cf7af" dataset="gb.schooldb" active-filter-id="" />
+    <filter-actions connection-id="72228584-086d-4758-9ef6-b9b9af7cf7af" dataset="gb.courses" active-filter-id="" />
+  </component>
+  <component name="DBNavigator.Project.ExecutionManager">
+    <retain-sticky-names value="false" />
+  </component>
+  <component name="DBNavigator.Project.ObjectQuickFilterManager">
+    <last-used-operator value="EQUAL" />
+    <filters />
+  </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
       <connection id="72228584-086d-4758-9ef6-b9b9af7cf7af" active="true" signed="true">
