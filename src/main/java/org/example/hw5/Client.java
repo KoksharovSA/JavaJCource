@@ -38,6 +38,7 @@ public class Client extends Thread{
         try {
             clientConnect();
             MessageReaderService messageReaderService = new MessageReaderService(server);
+            messageReaderService.setDaemon(true);
             messageReaderService.start();
             while (true){
                 Scanner in = new Scanner(System.in);

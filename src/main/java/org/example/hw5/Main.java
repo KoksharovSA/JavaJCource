@@ -21,6 +21,7 @@ public class Main {
                     System.out.print("Введите IP адрес и порт сервера через двоеточие: ");
                     String[] socket = scanner.next().split(":");
                     Client client = new Client(socket[0], Integer.parseInt(socket[1]));
+                    client.setDaemon(true);
                     client.run();
                 } else {
                     System.out.println("Неверный ввод!");
