@@ -15,18 +15,14 @@ public class DB {
 
     public static void con(){
         Connector connector = new Connector();
-        //Добавление
-        try (Session session = connector.getSession()) {
-            Course course = new Course("Python", 55);
-            session.beginTransaction();
-            session.save(course);
-            course = new Course("Java", 105);
-            session.save(course);
-            session.getTransaction().commit();
-            session.close();
-        } catch (Exception ex){
-            ex.printStackTrace();
-        }
+        addCourse(connector, new Course("Python", 55));
+        addCourse(connector, new Course("Java", 155));
+        readTableCourses(connector);
+        updateCourse(connector, 2, new Course("C#", 165));
+        removeAllCourses(connector);
+    }
+
+    private static void readTableCourses(Connector connector) {
         //Чтение
         try (Session session = connector.getSession()) {
             List<Course> courses = session.createQuery("FROM Course", Course.class).getResultList();
@@ -34,21 +30,26 @@ public class DB {
         } catch (Exception ex){
             ex.printStackTrace();
         }
+    }
+
+    private static void updateCourse(Connector connector, int id, Course course) {
         //Изменение
         try (Session session = connector.getSession()) {
             String hql = "FROM Course WHERE id = :id";
             Query<Course> query = session.createQuery(hql,Course.class);
-            query.setParameter("id", 5);
-            Course course = query.getSingleResult();
-            System.out.println(course);
-            course.setTitle("C#");
-            course.setDuration(130);
+            query.setParameter("id", id);
+            Course courseFromQuery = query.getSingleResult();
+            courseFromQuery.setTitle(course.getTitle());
+            courseFromQuery.setDuration(course.getDuration());
             session.beginTransaction();
-            session.update(course);
+            session.update(courseFromQuery);
             session.getTransaction().commit();
         } catch (Exception ex){
             ex.printStackTrace();
         }
+    }
+
+    private static void removeAllCourses(Connector connector) {
         //Удаление
         try (Session session = connector.getSession()) {
             List<Course> courses = session.createQuery("FROM Course", Course.class).getResultList();
@@ -57,6 +58,18 @@ public class DB {
                 session.update(m);
                 session.getTransaction().commit();
             });
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    private static void addCourse(Connector connector, Course course) {
+        //Добавление
+        try (Session session = connector.getSession()) {
+            session.beginTransaction();
+            session.save(course);
+            session.getTransaction().commit();
+            session.close();
         } catch (Exception ex){
             ex.printStackTrace();
         }
