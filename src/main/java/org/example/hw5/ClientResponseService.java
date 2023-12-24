@@ -27,9 +27,11 @@ public class ClientResponseService extends Thread {
                 }
                 System.out.println("Клиент " + socket.getRemoteSocketAddress() + " :" + word);
                 for(Socket sock: clientSocketList){
-                    out = new DataOutputStream(sock.getOutputStream());
-                    out.writeUTF("Клиент " + socket.getRemoteSocketAddress() + " :" + word);
-                    out.close();
+                    if (sock.isConnected()) {
+                        out = new DataOutputStream(sock.getOutputStream());
+                        out.writeUTF("Клиент " + socket.getRemoteSocketAddress() + " :" + word);
+                        out.close();
+                    }
                 }
             }
         } catch (IOException e) {
