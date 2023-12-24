@@ -10,6 +10,7 @@ public class MessageReaderService extends Thread {
 
     public MessageReaderService(Socket server) throws IOException {
         this.server = server;
+        this.in = new DataInputStream(this.server.getInputStream());
     }
 
     @Override
@@ -17,14 +18,20 @@ public class MessageReaderService extends Thread {
         String word;
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                this.in = new DataInputStream(this.server.getInputStream());
                 word = in.readUTF();
                 System.out.println(word);
-                in.close();
             }
         } catch (IOException e) {
             Thread.currentThread().interrupt();
             e.printStackTrace();
+        } finally {
+            if (Thread.currentThread().isInterrupted()){
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 }

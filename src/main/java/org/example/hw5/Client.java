@@ -27,7 +27,6 @@ public class Client extends Thread{
         try {
             DataOutputStream out = new DataOutputStream(server.getOutputStream());
             out.writeUTF(message);
-            out.close();
         } catch (IOException e) {
             System.out.println(e);
         }

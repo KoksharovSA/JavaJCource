@@ -12,6 +12,7 @@ public class ClientResponseService extends Thread {
     public ClientResponseService(Socket socket, List<Socket> clientSocketList) throws IOException {
         this.socket = socket;
         this.clientSocketList = clientSocketList;
+        this.in = new DataInputStream(this.socket.getInputStream());
     }
 
     @Override
@@ -19,9 +20,7 @@ public class ClientResponseService extends Thread {
         String word;
         try {
             while (!Thread.currentThread().isInterrupted()) {
-                in = new DataInputStream(this.socket.getInputStream());
                 word = in.readUTF();
-                in.close();
                 if (word.equals("stop")) {
                     break;
                 }
@@ -30,7 +29,6 @@ public class ClientResponseService extends Thread {
                     if (sock.isConnected()) {
                         out = new DataOutputStream(sock.getOutputStream());
                         out.writeUTF("Клиент " + socket.getRemoteSocketAddress() + " :" + word);
-                        out.close();
                     }
                 }
             }
