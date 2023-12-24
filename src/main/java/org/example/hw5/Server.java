@@ -14,9 +14,8 @@ public class Server extends Thread {
     }
 
     public void run() {
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             try {
-
                 System.out.println("Ожидание клиента на порт " +
                         serverSocket.getLocalPort() + "...");
                 Socket client = serverSocket.accept();
@@ -26,9 +25,19 @@ public class Server extends Thread {
                 clientResponseService.start();
             } catch (IOException e) {
                 e.printStackTrace();
-                break;
+                Thread.currentThread().interrupt();
+            } finally {
+                if (Thread.currentThread().isInterrupted()){
+                    try {
+                        serverSocket.close();
+                        for(Socket sock: clientSocketList){
+                            sock.close();
+                        }
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
             }
-
         }
     }
 }

@@ -25,9 +25,9 @@ public class Client extends Thread{
 
     public void sendMessage(String message){
         try {
-            OutputStream outToServer = server.getOutputStream();
-            DataOutputStream out = new DataOutputStream(outToServer);
+            DataOutputStream out = new DataOutputStream(server.getOutputStream());
             out.writeUTF(message);
+            out.close();
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -40,7 +40,7 @@ public class Client extends Thread{
             MessageReaderService messageReaderService = new MessageReaderService(server);
             messageReaderService.setDaemon(true);
             messageReaderService.start();
-            while (true){
+            while (!Thread.currentThread().isInterrupted()){
                 Scanner in = new Scanner(System.in);
                 System.out.println("Введите сообщение");
                 String message = in.next();
@@ -50,7 +50,16 @@ public class Client extends Thread{
                 sendMessage(message);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
+            e.printStackTrace();
+        } finally {
+            if (Thread.currentThread().isInterrupted()){
+                try {
+                    server.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 }
